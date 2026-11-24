@@ -1,0 +1,11 @@
+// Top connection errors by users affected
+// Source: https://sessionright.com/blog/avd-no-available-resources
+// License: MIT
+// Read-only: a query. It changes nothing.
+
+WVDErrors
+| where ServiceError == "false"
+| where ActivityType == "Connection"
+| summarize UserCount = dcount(UserName), SampleMessage = take_any(Message) by CodeSymbolic
+| project SampleMessage, UserCount
+| top 10 by UserCount desc

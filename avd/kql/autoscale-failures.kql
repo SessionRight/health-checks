@@ -1,0 +1,10 @@
+// Failed scaling plan evaluations
+// Source: https://sessionright.com/blog/avd-scaling-plan-guide
+// License: MIT
+// Read-only: a query. It changes nothing.
+
+WVDAutoscaleEvaluationPooled
+| where ResultType != "Succeeded"
+| join kind=leftouter WVDErrors
+    on CorrelationId
+| order by _ResourceId asc, TimeGenerated asc, CorrelationId, TimeGenerated1 asc

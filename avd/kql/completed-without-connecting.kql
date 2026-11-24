@@ -1,0 +1,11 @@
+// Connections that completed without connecting
+// Source: https://sessionright.com/blog/avd-monitoring-guide
+// License: MIT
+// Read-only: a query. It changes nothing.
+
+WVDConnections
+| where TimeGenerated > ago(1d)
+| summarize States = make_set(State), UserName = take_any(UserName), SessionHostName = take_any(SessionHostName) by CorrelationId
+| where set_has_element(States, "Completed") and not(set_has_element(States, "Connected"))
+| join kind=leftouter (WVDErrors | project CorrelationId, CodeSymbolic, Source, ServiceError, Message) on CorrelationId
+| project CorrelationId, UserName, SessionHostName, CodeSymbolic, Source, ServiceError, Message

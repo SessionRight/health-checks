@@ -1,0 +1,9 @@
+// Errors by code and source
+// Source: https://sessionright.com/blog/avd-monitoring-guide
+// License: MIT
+// Read-only: a query. It changes nothing.
+
+WVDErrors
+| where TimeGenerated > ago(1d)
+| summarize Errors = count(), Users = dcount(UserName) by CodeSymbolic, Source, ServiceError
+| order by Errors desc

@@ -1,0 +1,9 @@
+// Session hosts not Available right now
+// Source: https://sessionright.com/blog/avd-monitoring-guide
+// License: MIT
+// Read-only: a query. It changes nothing.
+
+WVDAgentHealthStatus
+| where TimeGenerated > ago(30m)
+| summarize arg_max(TimeGenerated, Status, AgentVersion, SxSStackVersion, ActiveSessions, AllowNewSessions) by SessionHostName, _ResourceId
+| where Status != "Available"

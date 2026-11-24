@@ -1,0 +1,10 @@
+// FSLogix event counts per host
+// Source: https://sessionright.com/blog/fslogix-event-id-26
+// License: MIT
+// Read-only: a query. It changes nothing.
+
+Event
+| where TimeGenerated > ago(1d)
+| where EventLog in ('Microsoft-FSLogix-Apps/Operational', 'Microsoft-FSLogix-Apps/Admin')
+| summarize Count = count(), LastSeen = max(TimeGenerated) by Computer, EventLog, EventID
+| order by Count desc

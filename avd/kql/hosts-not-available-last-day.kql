@@ -1,0 +1,9 @@
+// Session hosts not Available in the last day
+// Source: https://sessionright.com/blog/avd-session-host-unavailable
+// License: MIT
+// Read-only: a query. It changes nothing.
+
+WVDAgentHealthStatus
+| where TimeGenerated > ago(1d)
+| summarize arg_max(TimeGenerated, Status, AgentVersion, LastHeartBeat) by SessionHostName
+| where Status != "Available"

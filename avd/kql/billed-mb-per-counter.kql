@@ -1,0 +1,13 @@
+// Log Analytics volume per performance counter
+// Source: https://sessionright.com/blog/avd-monitoring-guide
+// License: MIT
+// Read-only: a query. It changes nothing.
+
+let WVDHosts = dynamic(['host1.contoso.com', 'host2.contoso.com']);
+Perf
+| where TimeGenerated > ago(1d)
+| where Computer in (WVDHosts)
+| extend PerfCounter = strcat(ObjectName, ":", CounterName)
+| summarize Records = count(TimeGenerated), InstanceNames = dcount(InstanceName), Bytes=sum(_BilledSize) by PerfCounter
+| extend Billed_MBytes = Bytes / (1024 * 1024), BytesPerRecord = Bytes / Records
+| sort by Records desc
